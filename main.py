@@ -140,7 +140,12 @@ while True:
         if event.type == pygame.QUIT:
             sys.exit()
 
+        # Rendering Part
+        screen.fill((245,245,245))
 
+        pygame.draw.circle(screen, (0,0,0), (100,100), 20, 2)
+        pygame.draw.circle(screen, (255, 0, 0), (100, 100), 20)
+        pygame.display.flip()
 
 
 
