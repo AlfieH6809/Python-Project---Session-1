@@ -46,7 +46,25 @@
 # #     print("That's a small number!")
 # # elif final_number <= 1000:
 # #     print("That's not a big number yet!")
+
+# Session 2
+
+# anEmptyList = []
 #
+# animals = ["Dog", "Cat", "Squirrel"]
+# numericalList = [1,2,3,77,456,0,3]
+# mixedList = ["Axe", "Dagger", 56,[8, "sword"]]
+# print(len(mixedList))
+# print(mixedList[3],[0],[1])
+#
+# animals.append("Snake")
+# print(animals)
+# # animals.remove("Snake")
+# # print(animals)
+#
+# del animals[-2:]
+# print(animals)
+
 # # Session 3
 #
 # # Session 3 Task One
@@ -108,7 +126,31 @@
 # #
 # # for key in fortune:
 # #     print(fortune[key])
-#
+
+
+# Session 7
+
+import pygame,sys
+pygame.init()
+pygame.display.set_caption("My First Game")
+screen = pygame.display.set_mode((1080,960))
+
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
+
+
+
+
+
+
+
+
+
+
+#Session 8
+
 # pygame.init()
 # pygame.display.set_caption("My first Pygame program")
 # screen = pygame.display.set_mode((1080, 700))
