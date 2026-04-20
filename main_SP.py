@@ -9,7 +9,7 @@ screen = pygame.display.set_mode((1080, 780))
 screen_w, screen_h = pygame.display.get_surface().get_size()
 
 #Images
-fighter_image = pygame.image.load("Assets/player.png")
+fighter_image = pygame.image.load("Assets/Ship.png")
 fighter_image.set_colorkey((255,255,255))
 green_inv = pygame.image.load("Assets/green.png").convert_alpha()
 red_inv = pygame.image.load("Assets/red.png").convert_alpha()
@@ -19,7 +19,7 @@ background_sc = pygame.transform.scale(background, (screen_w, screen_h))
 
 #Music
 pygame.mixer.music.load("Assets/Uranus.mp3")
-fire_sound = pygame.mixer.Sound('Assets/shoot.wav')
+fire_sound = pygame.mixer.Sound('Assets/shoot.mp3')
 
 clock = pygame.time.Clock()
 game_active = True
