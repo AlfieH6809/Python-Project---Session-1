@@ -11,9 +11,9 @@ screen_w, screen_h = pygame.display.get_surface().get_size()
 #Images
 fighter_image = pygame.image.load("Assets/Ship.png")
 fighter_image.set_colorkey((255,255,255))
-green_inv = pygame.image.load("Assets/green.png").convert_alpha()
-red_inv = pygame.image.load("Assets/red.png").convert_alpha()
-yellow_inv = pygame.image.load("Assets/yellow.png").convert_alpha()
+green_inv = pygame.image.load("Assets/InvaderA2.png").convert_alpha()
+red_inv = pygame.image.load("Assets/RedInvader.png").convert_alpha()
+yellow_inv = pygame.image.load("Assets/InvaderA1.png").convert_alpha()
 background = pygame.image.load("Assets/background.jfif").convert()
 background_sc = pygame.transform.scale(background, (screen_w, screen_h))
 
@@ -26,8 +26,7 @@ game_active = True
 last_time_spawned = 0
 font = pygame.font.SysFont("arial",30)
 
-missiles = []
-enemies = []
+
 lives = 3
 
 all_sprites = pygame.sprite.Group()
@@ -58,6 +57,8 @@ class Fighter(pygame.sprite.Sprite):
 
     def fire(self):
         m = Missile(self.rect.center)
+        missiles_sprites.add(m)
+        all_sprites.add(m)
         fire_sound.play()
 
 class Missile(pygame.sprite.Sprite):
@@ -75,20 +76,14 @@ class Missile(pygame.sprite.Sprite):
     def draw(self):
         pygame.draw.line(screen, (255,255,255), (self.x + 30, self.y), (self.x + 30, self.y-2))
 
-class Enemy:
+class Enemy(pygame.sprite.Sprite):
     def __init__(self):
-        self.x = random.randint(0, 640)
-        self.y = -40
+        pygame.sprite.Sprite.__init__(self)
+        self.image = red_inv
+        self.rect = self.image.get_rect(midbottom=(random.randint(0, 640), 0))
 
-    def move(self):
-        self.y += 10
-
-    def draw(self):
-        screen.blit(green_inv, (self.x,self.y))
-
-    def hitby(self, missile):
-        return pygame.Rect(self.x, self.y, green_inv.get_width(), green_inv.get_height()).clipline(
-            (missile.x + 30, missile.y + 30), (missile.x + 30, missile.y - 5))
+    def update(self):
+        self.rect.y += 4
 
 
 player = Fighter()
@@ -107,8 +102,15 @@ while game_active:
         #     # player.fire()
 
     if time.time() - last_time_spawned > 1:
-        enemies.append(Enemy())
+        e = Enemy()
+        enemies_sprites.add(e)
+        all_sprites.add(e)
         last_time_spawned = time.time()
+
+        ## Collision detection ##
+        collisionEnemMiss = pygame.sprite.groupcollide(enemies_sprites, missiles_sprites, True, True)
+        playerCollision = pygame.sprite.spritecollide(player, enemies_sprites, False)
+
 
     ###### rolling bckg ###
     y1 += 2
@@ -123,36 +125,21 @@ while game_active:
 
     screen.blit(background_sc, (0, y1))
     screen.blit(background_sc, (0, y2))
+
     all_sprites.update()
     all_sprites.draw(screen)
 
 
     screen.blit(font.render("Lives: " + str(lives), True, (255, 0, 0)), (50, 20))
 
-    for m in missiles:
-        m.draw()
-        m.move()
-
-    for enemy in enemies:
-        enemy.draw()
-        enemy.move()
-        if enemy.y == screen_h:
-            if lives > 1:
-                lives -= 1
-            else:
-                game_active = False
 
 
-    k = 0
-    while k < len(enemies):
-        i = 0
-        while i < len(missiles):
-            if enemies[k].hitby(missiles[i]):
-                del enemies[k]
-                del missiles[i]
-                k -= 1
-                break
-            i += 1
-        k += 1
+
+        # if enemy.y == screen_h:
+        #     if lives > 1:
+        #         lives -= 1
+        #     else:
+        #         game_active = False
+
 
     pygame.display.flip()
