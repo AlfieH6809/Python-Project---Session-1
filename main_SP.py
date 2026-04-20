@@ -30,17 +30,24 @@ missiles = []
 enemies = []
 lives = 3
 
+all_sprites = pygame.sprite.Group()
+enemies_sprites = pygame.sprite.Group()
+missiles_sprites = pygame.sprite.Group()
+
+
 y1 = 0
 y2 = - screen_h
 
 #Classes
-class Fighter:
+class Fighter(pygame.sprite.Sprite):
 
     def __init__(self):
-        self.x = screen_w/2
-        self.y = screen_h - 50
+        pygame.sprite.Sprite.__init__(self)
+        self.image = fighter_image
+        self.rect = self.image.get_rect(midbottom=(screen_w/2, screen_h))
 
-    def move(self):
+
+    def update(self):
         if pressed_key[K_RIGHT]:
             self.x = min(self.x + 4, screen_w - fighter_image.get_width())
         if pressed_key[K_LEFT]:
@@ -49,9 +56,9 @@ class Fighter:
     def draw(self):
         screen.blit(fighter_image, (self.x, self.y))
 
-    def fire(self):
-        missiles.append(Missile(self.x, self.y))
-        fire_sound.play()
+    # def fire(self):
+    #     missiles.append(Missile(self.x, self.y))
+    #     fire_sound.play()
 
 class Missile:
     def __init__(self,x,y):
@@ -81,6 +88,7 @@ class Enemy:
 
 
 player = Fighter()
+all_sprites.add(player)
 pygame.mixer.music.play(-1)
 
 while game_active:
@@ -91,8 +99,8 @@ while game_active:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:  #########
-            player.fire()
+        # if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:  #########
+        #     # player.fire()
 
     if time.time() - last_time_spawned > 1:
         enemies.append(Enemy())
@@ -111,8 +119,8 @@ while game_active:
 
     screen.blit(background_sc, (0, y1))
     screen.blit(background_sc, (0, y2))
-    player.draw()
-    player.move()
+    # player.draw()
+    # player.move()
 
     screen.blit(font.render("Lives: " + str(lives), True, (255, 0, 0)), (50, 20))
 
