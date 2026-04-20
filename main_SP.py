@@ -56,17 +56,21 @@ class Fighter(pygame.sprite.Sprite):
     def draw(self):
         screen.blit(fighter_image, (self.x, self.y))
 
-    # def fire(self):
-    #     missiles.append(Missile(self.x, self.y))
-    #     fire_sound.play()
+    def fire(self):
+        m = Missile(self.rect.center)
+        fire_sound.play()
 
-class Missile:
-    def __init__(self,x,y):
-        self.x = x
-        self.y = y
+class Missile(pygame.sprite.Sprite):
+    def __init__(self, coordinates):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((5,10))
+        pygame.draw.line(self.image,(255,255,255),(2, 10), (2, 0))
+        self.rect = self.image.get_rect(midbottom=coordinates)
 
-    def move(self):
-        self.y -= 10
+    def update(self):
+        self.rect.y -= 10
+        if self.rect.y < 0:
+            self.kill()
 
     def draw(self):
         pygame.draw.line(screen, (255,255,255), (self.x + 30, self.y), (self.x + 30, self.y-2))
@@ -119,8 +123,9 @@ while game_active:
 
     screen.blit(background_sc, (0, y1))
     screen.blit(background_sc, (0, y2))
-    # player.draw()
-    # player.move()
+    all_sprites.update()
+    all_sprites.draw(screen)
+
 
     screen.blit(font.render("Lives: " + str(lives), True, (255, 0, 0)), (50, 20))
 
