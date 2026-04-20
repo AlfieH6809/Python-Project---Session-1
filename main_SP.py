@@ -110,6 +110,11 @@ while game_active:
         ## Collision detection ##
         collisionEnemMiss = pygame.sprite.groupcollide(enemies_sprites, missiles_sprites, True, True)
         playerCollision = pygame.sprite.spritecollide(player, enemies_sprites, False)
+        if playerCollision:
+            if lives >=2:
+                lives -= 1
+            else:
+                game_active = False
 
 
     ###### rolling bckg ###
