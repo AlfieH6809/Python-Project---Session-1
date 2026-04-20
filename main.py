@@ -130,22 +130,22 @@
 
 # Session 7
 
-import pygame,sys
-pygame.init()
-pygame.display.set_caption("My First Game")
-screen = pygame.display.set_mode((1080,960))
-
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            sys.exit()
-
-        # Rendering Part
-        screen.fill((245,245,245))
-
-        pygame.draw.circle(screen, (0,0,0), (100,100), 20, 2)
-        pygame.draw.circle(screen, (255, 0, 0), (100, 100), 20)
-        pygame.display.flip()
+# import pygame,sys
+# pygame.init()
+# pygame.display.set_caption("My First Game")
+# screen = pygame.display.set_mode((1080,960))
+#
+# while True:
+#     for event in pygame.event.get():
+#         if event.type == pygame.QUIT:
+#             sys.exit()
+#
+#         # Rendering Part
+#         screen.fill((245,245,245))
+#
+#         pygame.draw.circle(screen, (0,0,0), (100,100), 20, 2)
+#         pygame.draw.circle(screen, (255, 0, 0), (100, 100), 20)
+#         pygame.display.flip()
 
 
 
@@ -185,3 +185,4 @@ while True:
 # def rain(self):
 #     rain.append(Raindrops(random.randint(self.x+100, self.x + 500), self.y+200))
 
+#Session 9
