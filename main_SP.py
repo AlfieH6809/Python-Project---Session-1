@@ -14,6 +14,8 @@ fighter_image.set_colorkey((255,255,255))
 green_inv = pygame.image.load("Assets/InvaderA2.png").convert_alpha()
 red_inv = pygame.image.load("Assets/RedInvader.png").convert_alpha()
 yellow_inv = pygame.image.load("Assets/InvaderA1.png").convert_alpha()
+pink_inv1 = pygame.image.load("Assets/enemy1_1.png").convert_alpha()
+pink_inv2 = pygame.image.load("Assets/enemy1_2.png").convert_alpha()
 background = pygame.image.load("Assets/background.jfif").convert()
 background_sc = pygame.transform.scale(background, (screen_w, screen_h))
 
@@ -33,6 +35,7 @@ all_sprites = pygame.sprite.Group()
 enemies_sprites = pygame.sprite.Group()
 missiles_sprites = pygame.sprite.Group()
 
+moving_inv = [pink_inv1, pink_inv2]
 
 y1 = 0
 y2 = - screen_h
@@ -79,11 +82,23 @@ class Missile(pygame.sprite.Sprite):
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = red_inv
+        self.image = moving_inv[0]
         self.rect = self.image.get_rect(midbottom=(random.randint(0, 640), 0))
+        self.index = 0
+        self.current_frame = 0
+        self.nr_frames_between = 10
+
+
 
     def update(self):
         self.rect.y += 4
+
+        self.current_frame += 1
+        if self.current_frame >= self.nr_frames_between:
+            self.index = (self.index + 1)%len(moving_inv)
+
+            (0 + 1)%2 = 1%2 -> 1
+            ()
 
 
 player = Fighter()
