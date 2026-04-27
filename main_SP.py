@@ -16,8 +16,11 @@ red_inv = pygame.image.load("Assets/RedInvader.png").convert_alpha()
 yellow_inv = pygame.image.load("Assets/InvaderA1.png").convert_alpha()
 pink_inv1 = pygame.image.load("Assets/enemy1_1.png").convert_alpha()
 pink_inv2 = pygame.image.load("Assets/enemy1_2.png").convert_alpha()
+spr_explo = pygame.image.load("Assets/Explosions/regularExplosion00.png").convert_alpha()
+
 background = pygame.image.load("Assets/background.jfif").convert()
 background_sc = pygame.transform.scale(background, (screen_w, screen_h))
+
 
 #Music
 pygame.mixer.music.load("Assets/Uranus.mp3")
@@ -36,6 +39,13 @@ enemies_sprites = pygame.sprite.Group()
 missiles_sprites = pygame.sprite.Group()
 
 moving_inv = [pink_inv1, pink_inv2]
+Explosions = []
+
+# Load Images in a list for explosion animations
+for i in range(9):
+    filename = 'Assets/Explosions/regularExplosion00.png'.format(i)
+    explosion_image = pygame.image.load(filename).convert_alpha()
+    Explosions.append(explosion_image)
 
 y1 = 0
 y2 = - screen_h
@@ -51,12 +61,9 @@ class Fighter(pygame.sprite.Sprite):
 
     def update(self):
         if pressed_key[K_RIGHT]:
-            self.x = min(self.x + 4, screen_w - fighter_image.get_width())
+            self.rect.x = min(self.rect.x + 4, screen_w - fighter_image.get_width())
         if pressed_key[K_LEFT]:
-            self.x = max(self.x - 4, 0)
-
-    def draw(self):
-        screen.blit(fighter_image, (self.x, self.y))
+            self.rect.x = max(self.rect.x - 4, 0)
 
     def fire(self):
         m = Missile(self.rect.center)
@@ -76,9 +83,6 @@ class Missile(pygame.sprite.Sprite):
         if self.rect.y < 0:
             self.kill()
 
-    def draw(self):
-        pygame.draw.line(screen, (255,255,255), (self.x + 30, self.y), (self.x + 30, self.y-2))
-
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -87,18 +91,36 @@ class Enemy(pygame.sprite.Sprite):
         self.index = 0
         # self.current_frame = 0
         self.time_since_last_pose = 10
+        self.angle = 0
 
 
 
     def update(self):
         self.rect.y += 4
 
+        old_center = self.rect.center
+        self.angle = (self.angle + 2)%360
+
         # self.current_frame += 1
         # if self.current_frame >= self.nr_frames_between:
         if time.time() - self.time_since_last_pose > 0.2:
             self.index = (self.index + 1)%len(moving_inv)
             self.image = moving_inv[self.index]
+            self.image = pygame.transform.rotate(self.image, self.angle)
+            self.rect = self.image.get_rect(center=old_center)
             self.time_since_last_pose = time.time()
+
+
+class Explosion(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = Explosions[0]
+        self.rect = self.image.get_rect(midbottom=(screen_w/2, screen_h/2))
+        self.index = 0
+        self.angle = 0
+
+
+
 
 
 
@@ -115,8 +137,8 @@ while game_active:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
-        # if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:  #########
-        #     # player.fire()
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:  #########
+            player.fire()
 
     if time.time() - last_time_spawned > 1:
         e = Enemy()
@@ -126,6 +148,8 @@ while game_active:
 
         ## Collision detection ##
         collisionEnemMiss = pygame.sprite.groupcollide(enemies_sprites, missiles_sprites, True, True)
+        if collisionEnemMiss:
+            print("Collision")
         playerCollision = pygame.sprite.spritecollide(player, enemies_sprites, False)
         if playerCollision:
             if lives >=2:
