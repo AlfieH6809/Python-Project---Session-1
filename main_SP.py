@@ -85,20 +85,22 @@ class Enemy(pygame.sprite.Sprite):
         self.image = moving_inv[0]
         self.rect = self.image.get_rect(midbottom=(random.randint(0, 640), 0))
         self.index = 0
-        self.current_frame = 0
-        self.nr_frames_between = 10
+        # self.current_frame = 0
+        self.time_since_last_pose = 10
 
 
 
     def update(self):
         self.rect.y += 4
 
-        self.current_frame += 1
-        if self.current_frame >= self.nr_frames_between:
+        # self.current_frame += 1
+        # if self.current_frame >= self.nr_frames_between:
+        if time.time() - self.time_since_last_pose > 0.2:
             self.index = (self.index + 1)%len(moving_inv)
+            self.image = moving_inv[self.index]
+            self.time_since_last_pose = time.time()
 
-            (0 + 1)%2 = 1%2 -> 1
-            ()
+
 
 
 player = Fighter()
