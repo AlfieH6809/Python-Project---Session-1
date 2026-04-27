@@ -17,9 +17,9 @@ yellow_inv = pygame.image.load("Assets/InvaderA1.png").convert_alpha()
 pink_inv1 = pygame.image.load("Assets/enemy1_1.png").convert_alpha()
 pink_inv2 = pygame.image.load("Assets/enemy1_2.png").convert_alpha()
 spr_explo = pygame.image.load("Assets/Explosions/regularExplosion00.png").convert_alpha()
-
 background = pygame.image.load("Assets/background.jfif").convert()
 background_sc = pygame.transform.scale(background, (screen_w, screen_h))
+spritesheet = pygame.image.load("Assets/pixel_character_spritesheets_48x48/pixel_character_pale_yellow.png").convert_alpha()
 
 
 #Music
@@ -55,7 +55,7 @@ class Fighter(pygame.sprite.Sprite):
 
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = fighter_image
+        self.image = spritesheet.subsurface((0,192,48,48 ))
         self.rect = self.image.get_rect(midbottom=(screen_w/2, screen_h))
 
 
@@ -115,9 +115,19 @@ class Explosion(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = Explosions[0]
-        self.rect = self.image.get_rect(midbottom=(screen_w/2, screen_h/2))
+        self.rect = self.image.get_rect(center=coord)
+        self.old_center = self.rect.center
+        self.time_since_last_image = 0
         self.index = 0
-        self.angle = 0
+
+    def update(self):
+
+        if time.time() - self.time_since_last_image > 0.1:
+            self.kill()
+        else:
+            self.index = (self.index + 1) % len(Explosions)
+            self.image = Explosions[self.index]
+
 
 
 
@@ -148,8 +158,10 @@ while game_active:
 
         ## Collision detection ##
         collisionEnemMiss = pygame.sprite.groupcollide(enemies_sprites, missiles_sprites, True, True)
-        if collisionEnemMiss:
-            print("Collision")
+        for i in collisionEnemMiss:
+            e = Explosions(i.rect.center)
+            all_sprites.add(e)
+
         playerCollision = pygame.sprite.spritecollide(player, enemies_sprites, False)
         if playerCollision:
             if lives >=2:
